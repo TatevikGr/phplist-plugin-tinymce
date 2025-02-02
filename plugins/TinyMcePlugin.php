@@ -22,21 +22,20 @@ class TinyMcePlugin extends phplistPlugin
 
     public function editor($fieldName, $content): string
     {
-        $width = getConfig('ckeditor_width') ?? 900;
-        $height = getConfig('ckeditor_height') ?? 450;
+        $width = 900;
+        $height = 450;
 
         list($script, $html) = $this->editorScript($fieldName, $width, $height);
-        $ckeditorUrl = getConfig('ckeditor_url') ?? self::CDN;
 
         return $this->textArea($fieldName, $content)
             . $html
-            . $this->scriptForSyncLoad($ckeditorUrl, $script);
+            . $this->scriptForSyncLoad(self::CDN, $script);
     }
 
-    private function scriptForSyncLoad($ckeditorUrl, $ckScript): string
+    private function scriptForSyncLoad($editorUrl, $ckScript): string
     {
         return <<<END
-<script type="text/javascript" src="$ckeditorUrl"></script>
+<script type="text/javascript" src="$editorUrl"></script>
 <script>
 $ckScript
 </script>
@@ -52,13 +51,11 @@ END;
 
     private function editorScript(string $fieldName, int $width, int $height): array
     {
-        $ckeditorUrl = getConfig('ckeditor_url');
-        unset($_SESSION['KCFINDER']);
+        $editorUrl = self::CDN;
         $html = '';
-        $uploadUrl = sprintf('%s://%s/%s', 'http', 'localhost', ltrim(UPLOADIMAGES_DIR, '/'));
 
         $script = <<<END
-<script src="$ckeditorUrl"></script>
+<script src="$editorUrl"></script>
 <script>
 tinymce.init({
     selector: 'textarea#$fieldName',
@@ -74,15 +71,14 @@ tinymce.init({
     
     file_picker_callback: function(callback, value, meta) {
         tinymce.activeEditor.windowManager.openUrl({
-            title: 'elFinder File Manager',
-            url: '/lists/admin/plugins/elFinder/elfinder.src.html',
+            title: 'File Manager',
+            url: '/lists/admin/plugins/TinyMcePlugin/elFinder/elfinder.src.html',
             allow_script_urls: true,
             width: $width,
             height: $height,
             onMessage: (api, data) => {
               if (data.mceAction === 'fileSelected') {
                 const baseUrl = window.location.origin + '/';
-                console.log(baseUrl)
                 const fileUrl = new URL(data.data.url, baseUrl).href;
                 callback(fileUrl);
                 api.close();

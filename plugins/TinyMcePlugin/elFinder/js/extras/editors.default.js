@@ -177,7 +177,6 @@
 	
 	// check getfile callback function
 	if (getfile) {
-		console.log('getfile callback function: ' + getfile);
 		getfile = getfile[1];
 		if (getfile === 'ckeditor') {
 			elFinder.prototype._options.getFileCallback = function(file, fm) {

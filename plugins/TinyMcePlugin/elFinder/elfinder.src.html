@@ -137,11 +137,10 @@
 					baseUrl : './',
 
 					// Connector URL
-					url : 'php/connector.minimal.php',
+					url : 'php/index.php',
 
 					// Callback when a file is double-clicked
 					getFileCallback : function(file) {
-						console.log('elfinder.src.html')
 						window.parent.postMessage({ mceAction: 'fileSelected', data: { url: file.url } }, '*');
 					},
 				},

@@ -172,7 +172,6 @@
 	// load JavaScripts (REQUIRED)
 
 	$(document).ready(function() {
-		console.log("elFinder initialized"); // Debugging
 		load();
 	});
 
